@@ -16,9 +16,17 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug');
+            $table->text('short_description');
             $table->text('description');
-            $table->text('avatar');
-            $table->unsignedDouble('price', [8,2]);
+            $table->string('unit');
+            $table->double('price', 8, 2);
+            $table->unsignedInteger('qty');
+            $table->text('avatar')->nullable();
+            $table->enum('status', [1,0])->comments('1-Available|0-Unavailable');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('category_id');
+            $table->unsignedBigInteger('supplier_id');
             $table->timestamps();
         });
     }

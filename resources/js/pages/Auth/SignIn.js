@@ -3,6 +3,9 @@ import Layout from "../../layout/Layout";
 import {Button, Card, CardBody, Form, FormGroup, Input, Label} from "reactstrap";
 import { useHistory } from "react-router-dom";
 
+import { useDispatch } from 'react-redux';
+import { authRequest } from '../../state/ducks/auth/actions';
+
 const INITIAL_VALUE = {
     email: '',
     password: '',
@@ -11,26 +14,23 @@ const INITIAL_VALUE = {
 function SignIn() {
     const [user, setUser] = useState(INITIAL_VALUE);
     const [loading, setLoading] = useState(false)
-    let history = useHistory();
+    const history = useHistory();
+    const dispatch = useDispatch();
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (User.loggedIn()) {
             history.push('/');
         }
-    }, [user])
+    }, [user])*/
 
     function handleChange(e) {
         const {name, value} = e.target;
         setUser(prevState => ({...prevState, [name]: value}))
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
-        setLoading(true)
-        axios.post('/api/login', user).then(({data}) => {
-            User.responseAfterLogin(data);
-            history.push('/');
-        }).catch(err => console.error(err))
+        await dispatch(authRequest('POST', 'login', 'LOGIN', history, user));
     }
 
     return (
@@ -45,7 +45,12 @@ function SignIn() {
 
                         <FormGroup>
                             <Label for="inputEmail">Email</Label>
-                            <Input type="email" name="email" id="inputEmail"  value={user.email} onChange={handleChange} />
+                            <Input
+                                type="email"
+                                name="email"
+                                id="inputEmail"
+                                value={user.email}
+                                onChange={handleChange} />
                         </FormGroup>
 
                         <FormGroup>

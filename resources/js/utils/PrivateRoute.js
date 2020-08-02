@@ -8,14 +8,14 @@ const isAuthenticated = () => {
         return false;
     }
     try {
-        jwt.verify(token, process.env.MIX_JWT_SECRET);
+        jwt.verify(token, 'IYo5mJHDjpWLiYiht5U7USHfkwAufl30QhrE7pjmcg5kW3KhFHLBjqPADZYV9GNn');
         return true;
     } catch (err) {
         console.log(err);
+        localStorage.removeItem('token');
         return false;
     }
-};
-
+}
 const PrivateRoute = ({ component: Component, ...rest }) => {
     return (
         <Route

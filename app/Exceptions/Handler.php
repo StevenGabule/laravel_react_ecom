@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -50,6 +52,25 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof AuthorizationException && $request->expectsJson()) {
+            return response()->json(['error' =>[
+                    'message' => 'You are not authorized to access this resource.'
+                ]], 403);
+        }
+
+        if ($exception instanceof ModelNotFoundException && $request->expectsJson()) {
+            return response()->json(['error' =>[
+                'message' => 'The resource you are trying to access is not found.'
+            ]], 404);
+        }
+
+        if ($exception instanceof ModelNotDefined && $request->expectsJson()) {
+            return response()->json(['error' =>[
+                'message' => 'No model defined'
+            ]], 500);
+        }
+
+
         return parent::render($request, $exception);
     }
 }

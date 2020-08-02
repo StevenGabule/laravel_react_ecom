@@ -1,28 +1,35 @@
 import React, {useState} from "react";
 import Layout from "../../layout/Layout";
 import {Button, Card, CardBody, Form, FormGroup, Input, Label} from "reactstrap";
+import { useHistory } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { authRequest } from '../../state/ducks/auth/actions';
 
 const INITIAL_VALUE = {
     name: 'mike ross',
     email: 'mikeross@gmail.com',
     password: 'password',
     password_confirmation: 'password',
+    phone_number: '0987654321'
 }
 
 function SignUp() {
     const [user, setUser] = useState(INITIAL_VALUE);
     const [loading, setLoading] = useState(false);
+    const history = useHistory();
+    const dispatch = useDispatch();
 
     function handleChange(e) {
         const {name, value} = e.target;
         setUser(prevState => ({...prevState, [name]: value}))
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
-        axios.post('register', user).then((user) => {
+        /*axios.post('/api/register', user).then((user) => {
             console.log(user)
-        }).catch(err => console.error(err))
+        }).catch(err => console.error(err))*/
+        await dispatch(authRequest('POST', 'register', 'SIGNUP', history, user));
     }
 
     return (
@@ -42,6 +49,11 @@ function SignUp() {
                         <FormGroup>
                             <Label for="inputEmail">Email</Label>
                             <Input type="email" name="email" id="inputEmail"  value={user.email} onChange={handleChange} />
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Label for="inputPhone">Phone Number</Label>
+                            <Input type="text" name="phone_number" id="inputPhone"  value={user.phone_number} onChange={handleChange} />
                         </FormGroup>
 
                         <FormGroup>

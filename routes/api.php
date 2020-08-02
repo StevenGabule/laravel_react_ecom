@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('products', 'Product\ProductController@index');
+Route::get('products-show/{id}', 'Product\ProductController@show');
+
+
+
 // Route group for guest only
 Route::group(['middleware' => ['guest:api']], static function () {
     Route::post('register', 'Auth\RegisterController@register');
@@ -23,6 +28,9 @@ Route::group(['middleware' => ['guest:api']], static function () {
 Route::group(['middleware' => ['auth:api']], static function () {
     Route::get('me', 'User\MeController@getMe');
     Route::post('logout', 'Auth\LoginController@logout');
+
+    // cart api routes
+    Route::post('cart-add', 'Cart\CartController@addToCart');
 });
 /*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
